@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import pymongo
 from bson.objectid import ObjectId
 #from pymongo import MongoClientd
+from quickstart import fetch_google_calendar_events
 
 load_dotenv()
 mongodb_uri = os.getenv('MONGODB_URI')
@@ -48,9 +49,24 @@ def will_this_work():
 
     result = students.insert_one(student)
 
+def save_events_to_mongo(events):
+    student_db = client.get_database("Students")
+    calendar = student_db.get_collection("student calendar") 
+    for event in events:
+        event_data = {
+            'id': event['id'],
+            'summary': event.get('summary', 'No Title'),
+            'start': event['start'].get('dateTime', event['start'].get('date')),
+            'end': event['end'].get('dateTime', event['end'].get('date'))
+        }
+        # Upsert (insert if not exists, update if exists)
+        calendar.update_one({'id': event['id']}, {'$set': event_data}, upsert=True)
+
 def main():
-   add_student_record()
-   will_this_work()
+   #add_student_record()
+   #will_this_work()
+   events = fetch_google_calendar_events()
+   save_events_to_mongo(events)
 
 if __name__ == "__main__":
     main()
