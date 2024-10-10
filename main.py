@@ -2,14 +2,13 @@ import os
 from dotenv import load_dotenv
 import pymongo
 from bson.objectid import ObjectId
-#from pymongo import MongoClientd
 from pymongo.mongo_client import MongoClient
 from quickstart import fetch_google_calendar_events
+import json
+from datetime import datetime
 
 load_dotenv()
 mongodb_uri = os.getenv('MONGODB_URI')
-
-
 
 #from professor's set up 
 
@@ -28,13 +27,14 @@ def add_student_record(email, event_types, availability, calendar_id):
     student = {
     "_id": ObjectId(),  #Unique user ID
     "email": email,  #User's email for Google login
-    "oauthToken": {
+    #"oauthToken": {
     #json file reference 
-  },
+    #},
   "preferences": {
     "eventTypes": event_types, #array of Preferred event types (e.g. STEM, sports)
     "availability": [
       {
+          #will fix to have more accuracy & connection with google calendar
           #availability - array of user's information
         "day": availability[0],  # Day of the week
         "startTime": availability[1],  #Start of available window
@@ -48,26 +48,63 @@ def add_student_record(email, event_types, availability, calendar_id):
     result = students.insert_one(student)
     print(f"User inserted with ID: {result.inserted_id}")
 
+def update_student_calendarID(user_id, calendar_id):
+    myquery = { "_id": user_id }
+    newvalues = { "$set": { "calendarID": calendar_id } }
+
+    students.update_one(myquery, newvalues)
 
 
-def add_student_calendar(events):
+def add_student_calendar(event, user_id,json_filepath):
     student_db = client.get_database("Students")
     calendar = student_db.get_collection("student calendar") 
-    for event in events:
-        event_data = {
+
+    #fetch event data 
+    source_data = {
             'id': event['id'],
-            'summary': event.get('summary', 'No Title'),
+            'title': event.get('summary', 'No Title'),
+            'description': event.get('description','No description'),
             'start': event['start'].get('dateTime', event['start'].get('date')),
-            'end': event['end'].get('dateTime', event['end'].get('date'))
+            'end': event['end'].get('dateTime', event['end'].get('date')),
+            'location':event.get('location','No location'),
+            'status':event.get('status','No Status'),
         }
-        # Upsert (insert if not exists, update if exists)
-        calendar.update_one({'id': event['id']}, {'$set': event_data}, upsert=True)
+    
+    with open(json_filepath, 'r') as file:
+        data = json.load(file)  # Load the JSON data into a Python dictionary
+        expiry = data.get("expiry", "No expiry found")  # Access "expiry" key
+        expiry_date = datetime.strptime(expiry, "%Y-%m-%dT%H:%M:%SZ")
+        input_expiry = expiry_date.strftime("%B %d, %Y, %I:%M %p")
+
+    event_data = {
+     "_id": ObjectId(),  #Unique calendar ID
+    "userId": user_id,  #Reference to the user
+    "events": [
+    {
+      "eventId": source_data['id'],  #Event ID from Google Calendar
+      "title": source_data['title'],  #Event title
+      "description": source_data['description'],  #Event description
+      "startTime": source_data['start'],  #Event start time
+      "endTime": source_data['end'],  #Event end time
+      "location": source_data['location'],  #Event location
+      "status": source_data['status'],  #e.g., "confirmed", "cancelled"
+      #"source": String  // "Google" or "NYU Engage"
+    }
+    ],
+
+    "calendar_API expiry (last accessed date)": input_expiry
+    }
+
+    calendar.update_one({'id': event_data['_id']}, {'$set': event_data}, upsert=True)
 
 def main():
-   #add_student_record()
-   #will_this_work()
-   events = fetch_google_calendar_events()
-   save_events_to_mongo(events)
+    events = fetch_google_calendar_events()
+    add_student_record('jl13844@nyu.edu',['STEM',"Entrepreneurship","Networking"],['M','12:30 PM','5 PM'],None)
+    add_student_calendar(events[1],students.find_one( {'email' : 'jl13844@nyu.edu'}, {'_id': 1}),'/Users/jinlee/Desktop/PPDS_week4/token.json')
+    print("insertion successful")
+
+   
+   
 
 if __name__ == "__main__":
     main()
