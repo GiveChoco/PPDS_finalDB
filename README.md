@@ -2,6 +2,7 @@
 
 - Our finished web application will (hopefully) connect to your Google Calendar and automatically populate it with *invitations* to events scraped from NYU Engage based on your personal preferences. Accepting an invite would redirect the user to go ahead and RSVP for the event. Likewise rejecting invites would remove the clutter of invites from their Google Calender space.
 - But for now, this is a simple backend application designed to sync Google Calendar events into a MongoDB database. There's no front-end interface — just backend logic for fetching, storing, and updating calendar and student data in the database.
+- As a test, we've inserted our own sample data (i.e. netids, Google Calender data) to see the functionality of our database and ensure that it's meaningful and representative of real world use.
 
 ## Features
 
@@ -22,7 +23,7 @@
 
 1. Clone this repository or download the source code:
     ```bash
-    git clone https://github.com/
+    git clone https://github.com/GiveChoco/PPDS_finalDB.git
     ```
 
 2. Navigate to the project directory:
@@ -69,8 +70,8 @@ To run the application:
 ## Contributers
 
 - Group 3:
-Jin Lee
-Daniar Zhylangozov
-Nadia Chan
+Jin Lee,
+Daniar Zhylangozov,
+Nadia Chan,
 Ziyue Tao
 - Contributions to improve the application are welcome. Please feel free to submit a Pull Request.
