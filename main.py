@@ -2,10 +2,9 @@ import os
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
-import datetime
 from quickstart import fetch_google_calendar_events
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 load_dotenv()
 mongodb_uri = mongodb_uri = os.getenv('MONGODB_URI')
@@ -183,7 +182,7 @@ def main():
     print("update successful")
   
 
-   dummy_event_data = {
+    dummy_event_data = {
     "_id": ObjectId(),  # Let MongoDB generate this automatically if desired
     "name": "STEM Workshop: AI in Healthcare",
     "description": "An interactive workshop exploring AI applications in healthcare.",
@@ -191,15 +190,15 @@ def main():
     "venue": "NYU Abu Dhabi, Room A301",
     "startTime": datetime(2024, 10, 20, 10, 30),  # Example start time: Oct 20, 2024, 10:30 AM
     "endTime": datetime(2024, 10, 20, 12, 0),  # Example end time: Oct 20, 2024, 12:00 PM
-    "createdAt": datetime.utcnow(),  # The current time when it was scraped/created
+    "createdAt": datetime.now(timezone.utc),  # The current time when it was scraped/created
     "source": "NYU Engage"
     }
 
 # Call the add_events function with the dummy data
-   event_id = add_events(dummy_event_data)
-   dummy_user_id = ObjectId()  # Example user ID 
+    event_id = add_events(dummy_event_data)
+    dummy_user_id = ObjectId()  # Example user ID 
 
-   create_event_calendar(
+    create_event_calendar(
     user_id= dummy_user_id,
     event_id= event_id,
     status="suggested"  # Status can be "suggested", "accepted", or "declined"
