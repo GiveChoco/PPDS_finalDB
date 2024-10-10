@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import pymongo
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
 from quickstart import fetch_google_calendar_events
@@ -8,11 +7,11 @@ import json
 from datetime import datetime
 
 load_dotenv()
-mongodb_uri = os.getenv('MONGODB_URI')
+mongodb_uri = "mongodb+srv://test1:HDfeAFkJ7ydMja@ppds.kg0g4.mongodb.net/?retryWrites=true&w=majority&appName=PPDS"
 
 #from professor's set up 
 
-client = pymongo.MongoClient(mongodb_uri) # this creates a client that can connect to our DB
+client = MongoClient(mongodb_uri) # this creates a client that can connect to our DB
 print("Databases available:")
 print(client.list_database_names()) # just to make sure you are connecting to the right server...
 db = client.get_database("Students") # this gets the database named 'Students'
@@ -21,7 +20,6 @@ students = db.get_collection("student bio")
 client.server_info() # this is a hack to force the client to connect to the server so we can error out
 print("Connected successfully to the student bio database")
 
-#C of CRUD - create 
 def add_student_record(email, event_types, availability, calendar_id):
 
     student = {
@@ -48,9 +46,9 @@ def add_student_record(email, event_types, availability, calendar_id):
     result = students.insert_one(student)
     print(f"User inserted with ID: {result.inserted_id}")
 
-def update_student_calendarID(user_id, calendar_id):
+def update_student_calendarId(user_id, calendar_id):
     myquery = { "_id": user_id }
-    newvalues = { "$set": { "calendarID": calendar_id } }
+    newvalues = { "$set": { "calendarId": calendar_id } }
 
     students.update_one(myquery, newvalues)
 
@@ -73,7 +71,7 @@ def add_student_calendar(event, user_id,json_filepath):
     with open(json_filepath, 'r') as file:
         data = json.load(file)  # Load the JSON data into a Python dictionary
         expiry = data.get("expiry", "No expiry found")  # Access "expiry" key
-        expiry_date = datetime.strptime(expiry, "%Y-%m-%dT%H:%M:%SZ")
+        expiry_date = datetime.strptime(expiry, '%Y-%m-%dT%H:%M:%S.%fZ')
         input_expiry = expiry_date.strftime("%B %d, %Y, %I:%M %p")
 
     event_data = {
@@ -99,11 +97,17 @@ def add_student_calendar(event, user_id,json_filepath):
 
 def main():
     events = fetch_google_calendar_events()
-    add_student_record('jl13844@nyu.edu',['STEM',"Entrepreneurship","Networking"],['M','12:30 PM','5 PM'],None)
+    add_student_record('jl13844@nyu.edu',['STEM',"Entrepreneurship","Networking"],['M','12:30 PM','5 PM'],ObjectId())
     add_student_calendar(events[1],students.find_one( {'email' : 'jl13844@nyu.edu'}, {'_id': 1}),'/Users/jinlee/Desktop/PPDS_week4/token.json')
     print("insertion successful")
 
-   
+    
+    student_calendar = db.get_collection("student calendar") 
+    student = students.find_one( {'email' : 'jl13844@nyu.edu'}, {'_id': 1})
+    student_id = student['_id']
+    print(student_id)
+    update_student_calendarId(student_id,student_calendar.find_one({'userId._id': student_id},{'_id': 1}))
+    print("update successful")
    
 
 if __name__ == "__main__":
