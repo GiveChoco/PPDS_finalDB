@@ -1,15 +1,28 @@
 # NYU Event Sync: Google Calendar Integration with NYU Engage
 
-- Our finished web application will (hopefully) connect to your Google Calendar and automatically populate it with *invitations* to events scraped from NYU Engage based on your personal preferences. Accepting an invite would redirect the user to go ahead and RSVP for the event. Likewise rejecting invites would remove the clutter of invites from their Google Calender space.
-- But for now, this is a simple backend application designed to sync Google Calendar events into a MongoDB database. There's no front-end interface — just backend logic for fetching, storing, and updating calendar and student data in the database.
-- As a test, we've inserted our own sample data (i.e. name, netid, sleep time, Google Calender data) to see the functionality of our database and ensure that it's meaningful and representative of real world use.
+Our finished web application aims to connect to your Google Calendar and automatically populate it with invitations to events scraped from NYU Engage, based on your personal preferences. Accepting an invite will redirect the user to RSVP for the event. Likewise, rejecting invites will remove the clutter of invites from their Google Calendar space.
+
+## Current Status:
+
+- This is a simple backend application designed to sync Google Calendar events into a MongoDB database. There is no front-end interface — just backend logic for fetching, storing, and updating calendar and student data in the database.
+- As a test, we've inserted our own sample data (i.e. name, netid, Google Calender data) to see the functionality of our database and ensure that it's meaningful and representative of real world use.
 
 ## Features
 
 - **OAuth (Google) login** for connecting to Google Calendar.
 - **Fetch Google Calendar events** and store them in MongoDB.
 - **Upsert functionality:** Insert new events or update existing ones in the MongoDB collection.
-- **Add student records** manually for testing purposes.
+- **Manual student records can be inserted** for testing purposes.
+
+## Schema and Database Design:
+
+The database uses MongoDB, and the schema includes:
+- **Student Bio:** Information such as name, email, netID, and preferences related to event types.
+- **Student Calendar:** Calendar entries pulled from Google Calendar linked to a student.
+- **Event:** Event details from NYU Engage.
+- **Event Calendar:** Tracks the event status for a user, e.g., suggested, accepted, or declined.
+Refer to the image ppds_mongodb_schema.jpg for a visual representation of the database schema.
+
 
 ## Prerequisites
 
@@ -61,11 +74,28 @@
 
 ## Usage
 
-To run the application:
+1. **Main Application** (`main.py`):  
+   This is the primary script that:
+   - Authenticates users via Google OAuth.
+   - Fetches Google Calendar events.
+   - Syncs events to MongoDB by inserting or updating existing records.
 
-    ```bash
-    python main.py
-    ```
+   Run the main application with:
+
+   ```bash
+   python main.py
+   ```
+
+2. **Quickstart Script** (`quickstart.py`):  
+   A basic script used to:
+   - Authenticate users via Google OAuth.
+   - Fetch and display Google Calendar events in the terminal.
+
+   Run the quickstart script with:
+
+   ```bash
+   python quickstart.py
+   ```
 
 ## Contributers
 
