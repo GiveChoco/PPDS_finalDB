@@ -1,6 +1,6 @@
 # NYU Event Sync: Google Calendar Integration with NYU Engage
 
-Our finished web application aims to connect to your Google Calendar and automatically populate it with invitations to events scraped from NYU Engage, based on your personal preferences. Accepting an invite will redirect the user to RSVP for the event. Likewise, rejecting invites will remove the clutter of invites from their Google Calendar space.
+Our finished web application will (hopefully) connect to your Google Calendar and automatically populate it with invitations to events scraped from NYU Engage, based on your personal preferences. Accepting an invite will redirect the user to RSVP for the event. Likewise, rejecting invites will remove the clutter of invites from their Google Calendar space.
 
 ## Current Status:
 
