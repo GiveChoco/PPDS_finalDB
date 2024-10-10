@@ -41,7 +41,7 @@ Refer to the image ppds_mongodb_schema.jpg for a visual representation of the da
 
 2. Navigate to the project directory:
     ```bash
-    cd path/to/
+    cd path/to/your_desired_directory_name_here
     ```
 
 3. Create a virtual environment if you'd like:
@@ -99,9 +99,10 @@ Refer to the image ppds_mongodb_schema.jpg for a visual representation of the da
 
 ## Contributers
 
-- Group 3:
+Group 3:
 Jin Lee,
 Daniar Zhylangozov,
 Nadia Chan,
 Ziyue Tao
+
 - Contributions to improve the application are welcome. Please feel free to submit a Pull Request.
