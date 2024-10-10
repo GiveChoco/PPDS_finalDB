@@ -76,9 +76,8 @@ Refer to the image ppds_mongodb_schema.jpg for a visual representation of the da
 
 1. **Main Application** (`main.py`):  
    This is the primary script that:
-   - Authenticates users via Google OAuth.
-   - Fetches Google Calendar events.
-   - Syncs events to MongoDB by inserting or updating existing records.
+   - Builds upon the functionality of quickstart.py by adding MongoDB integration, allowing fetched events to be stored, updated, or removed from the database.
+   - The main.py file contains all the production-level logic for syncing the Google Calendar with MongoDB.
 
    Run the main application with:
 
@@ -88,8 +87,8 @@ Refer to the image ppds_mongodb_schema.jpg for a visual representation of the da
 
 2. **Quickstart Script** (`quickstart.py`):  
    A basic script used to:
-   - Authenticate users via Google OAuth.
-   - Fetch and display Google Calendar events in the terminal.
+    - Test the OAuth connection and fetch Google Calendar events initially.
+    - It helps you confirm that the connection between the application and the Google Calendar API is functional.
 
    Run the quickstart script with:
 
