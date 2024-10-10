@@ -7,8 +7,7 @@ import json
 from datetime import datetime
 
 load_dotenv()
-mongodb_uri = "mongodb+srv://test1:HDfeAFkJ7ydMja@ppds.kg0g4.mongodb.net/?retryWrites=true&w=majority&appName=PPDS"
-
+mongodb_uri = mongodb_uri = os.getenv('MONGODB_URI')
 #from professor's set up 
 
 client = MongoClient(mongodb_uri) # this creates a client that can connect to our DB
@@ -101,7 +100,7 @@ def main():
     add_student_calendar(events[1],students.find_one( {'email' : 'jl13844@nyu.edu'}, {'_id': 1}),'/Users/jinlee/Desktop/PPDS_week4/token.json')
     print("insertion successful")
 
-    
+
     student_calendar = db.get_collection("student calendar") 
     student = students.find_one( {'email' : 'jl13844@nyu.edu'}, {'_id': 1})
     student_id = student['_id']
