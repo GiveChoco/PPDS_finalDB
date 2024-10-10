@@ -105,4 +105,4 @@ Daniar Zhylangozov,
 Nadia Chan,
 Ziyue Tao
 
-- Contributions to improve the application are welcome. Please feel free to submit a Pull Request.
+Contributions to improve the application are welcome. Please feel free to submit a Pull Request.
