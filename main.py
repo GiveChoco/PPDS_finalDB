@@ -3,13 +3,12 @@ from dotenv import load_dotenv
 import pymongo
 from bson.objectid import ObjectId
 #from pymongo import MongoClientd
+from pymongo.mongo_client import MongoClient
 from quickstart import fetch_google_calendar_events
 
 load_dotenv()
 mongodb_uri = os.getenv('MONGODB_URI')
 
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 
 
 #from professor's set up 
@@ -17,39 +16,41 @@ from pymongo.server_api import ServerApi
 client = pymongo.MongoClient(mongodb_uri) # this creates a client that can connect to our DB
 print("Databases available:")
 print(client.list_database_names()) # just to make sure you are connecting to the right server...
-db = client.get_database("Students") # this gets the database named 'campy'
+db = client.get_database("Students") # this gets the database named 'Students'
 students = db.get_collection("student bio") 
     
 client.server_info() # this is a hack to force the client to connect to the server so we can error out
 print("Connected successfully to the student bio database")
 
-def add_student_record():
-    name = input("You name: ")
-    netid = input("your netid: ")
+#C of CRUD - create 
+def add_student_record(email, event_types, availability, calendar_id):
 
     student = {
-        "name":name,
-        "netid":netid
+    "_id": ObjectId(),  #Unique user ID
+    "email": email,  #User's email for Google login
+    "oauthToken": {
+    #json file reference 
+  },
+  "preferences": {
+    "eventTypes": event_types, #array of Preferred event types (e.g. STEM, sports)
+    "availability": [
+      {
+          #availability - array of user's information
+        "day": availability[0],  # Day of the week
+        "startTime": availability[1],  #Start of available window
+        "endTime": availability[2]  #End of available window
+      }
+    ]
+  },
+  "calendarId": calendar_id #Reference to the user's Google Calendar data
     }
-
+    
     result = students.insert_one(student)
+    print(f"User inserted with ID: {result.inserted_id}")
 
-def will_this_work():
-    name = "jin Lee"
-    netid ='jl13844'
-    sleep_time = "10:44 AM"
-    sleep_duration = 5
 
-    student = {
-        "name":name,
-        "netid":netid,
-        "sleep_time":sleep_time,
-        "sleep_duration": sleep_duration
-    }
 
-    result = students.insert_one(student)
-
-def save_events_to_mongo(events):
+def add_student_calendar(events):
     student_db = client.get_database("Students")
     calendar = student_db.get_collection("student calendar") 
     for event in events:
